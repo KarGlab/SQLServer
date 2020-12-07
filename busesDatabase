@@ -1,0 +1,116 @@
+
+create database AutobusyGalinskaGajdaGlab
+
+---
+
+use AutobusyGalinskaGajdaGlab
+
+---
+
+CREATE TABLE Informacje_podstawowe
+(
+	"ID_Autobusu"					int primary key IDENTITY(1, 1),
+	"Nr_Rejestracyjny"				varchar(12) NOT NULL, 
+	"Predkosc_maksymalna_[km/h]" 	bigint NOT NULL,
+	"Aktualna_moc_silnika_[KM]"		bigint NOT NULL,
+	"Marka"							varchar(50) NOT NULL,
+	"Kolor_Lakieru"					varchar(50),
+	"Il_miejsc_siedzących"			int,
+	"Il_miejsc_stojacych"			int,
+)
+
+
+INSERT INTO		Informacje_podstawowe("Nr_Rejestracyjny", "Predkosc_maksymalna_[km/h]" , "Aktualna_moc_silnika_[KM]","Marka","Kolor_Lakieru","Il_miejsc_siedzących","Il_miejsc_stojacych")
+VALUES			('ML3M',120,1000,'BMW','Czerwony',60, 120), ('R4ID3R',80,700,'Solaris','Biały',80,160), ('R2D2',140,1300,'Solaris','Niebieski',50, 100)
+
+-----------------------------------------------------------------------------------------------------------
+
+CREATE TABLE Zuzycia
+(
+	"Letnie_zuzycie_paliwa_[l/100km]"	bigint NOT NULL, 
+	"Zimowa_zuzycie_paliwa_[l/100km]" 	bigint NOT NULL,
+	"Zuzycie_oleju_[l/1000km]"			bigint NOT NULL,
+	ID_Autobusu			int FOREIGN KEY REFERENCES Informacje_podstawowe(ID_Autobusu)
+)
+
+INSERT INTO Zuzycia("Letnie_zuzycie_paliwa_[l/100km]", "Zimowa_zuzycie_paliwa_[l/100km]", "Zuzycie_oleju_[l/1000km]","ID_Autobusu")
+VALUES (10, 20, 30, 1), (40, 50, 60, 2), (70, 80, 90, 3)
+
+-----------------------------------------------------------------------------------------------------------
+
+create table Przeglądy
+(
+	ID_Przeglądu	int primary key IDENTITY(1, 1),
+	D1				int,
+	D2				int,
+	imie			nvarchar(30),
+	nazwisko		nvarchar(30),
+	nazwa_firmy		nvarchar(50),
+	data_przeglądu	date,
+	data_następnego	date,
+	nr_tel_firmy	bigint
+)
+insert into Przeglądy
+(
+	D1,
+	D2,
+	imie,
+	nazwisko,
+	nazwa_firmy,
+	data_przeglądu,
+	data_następnego,
+	nr_tel_firmy
+)
+values
+	(2, 3, 'Bronisław', 'Pumpernikiel', 'Przeglądy z Bronkiem', '2020-01-30', '2022-01-15', 478928374),
+	(1, 2, 'Andrzej', 'Nowak', 'AUTO BŁYSK', '2019-11-19', '2021-10-02', 283759473),
+	(1, 1, 'Marzena', 'Park', 'KOR-CAR', '2018-02-12', '2020-01-03', 384756281)
+
+-----------------------------------------------------------------------------------------------------------
+
+create table Kierowcy
+(
+	kierowcaID			int primary key IDENTITY(1, 1), 
+	imie				nvarchar(30), 
+	nazwisko			nvarchar(30), 
+	miasto				nvarchar(30), 
+	ulica				nvarchar(30), 
+	nr_domu				int, 
+	kod_pocztowy		nvarchar(10), 
+	nr_tel_kierowcy		bigint, 
+	data_zatrudnienia	date,
+	ID_Autobusu			int FOREIGN KEY REFERENCES Informacje_podstawowe(ID_Autobusu)
+	)
+
+
+insert into Kierowcy
+(
+	imie, 
+	nazwisko,
+	miasto, 
+	ulica, 
+	nr_domu,
+	kod_pocztowy, 
+	nr_tel_kierowcy,
+	data_zatrudnienia,
+	ID_Autobusu
+
+)
+values  
+	('Janusz', 'Lejek', 'Baborów', 'Kosynierów', 8, '48-120', 758293817, '2009-11-10',1),	
+	('Mariola', 'Szturchajło', 'Warszawa', 'Plebiscytowa', 67, '000-01', 717219013, '2015-05-10',2),
+	('Iwona', 'Myszka', 'Katowice', 'Rybnicka', 937, '40-000', 539347623, '1999-03-17',3)
+	
+-----------------------------------------------------------------------------------------------------------
+
+create table Dane_Techniczne
+(
+"ID_Autobusu"										int FOREIGN KEY REFERENCES Informacje_podstawowe(ID_Autobusu)
+,"ID_Przeglądu"										int FOREIGN KEY REFERENCES Przeglądy(ID_Przeglądu),
+"Ciśnienie sprzężania [mpa]"						int
+, "Zawartość elementów smołowatych w spalinach [%]" int 
+, "Moment obrotowy silnika [Nm]"					int
+)
+
+INSERT INTO Dane_Techniczne("ID_Autobusu","ID_Przeglądu","Ciśnienie sprzężania [mpa]", "Zawartość elementów smołowatych w spalinach [%]","Moment obrotowy silnika [Nm]")
+VALUES (1,1,10, 5, 100), (2,2,20, 10, 110), (3,3,30, 15, 120)
